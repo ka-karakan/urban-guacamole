@@ -42,7 +42,7 @@ stages:
 
   - stage: container
     condition: and(succeeded(), eq(variables.isMain, 'true'), eq('${{ parameters.container }}', 'true'))
-    displayName: Build and push container
+    displayName: Build and push Docker image
 
     jobs:
       - template: pipelines/containers.yml
