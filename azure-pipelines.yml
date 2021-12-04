@@ -1,0 +1,61 @@
+pr:
+  branches:
+    include:
+      - main
+
+trigger:
+  branches:
+    include:
+      - main
+
+parameters:
+  - name: container
+    displayName: Emit Docker images?
+    type: boolean
+    default: false
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  isMaster: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
+
+stages:
+  - stage: build
+    displayName: Build app
+
+    jobs:
+      - job: app
+        condition: always()
+        displayName: Build and test .NET app
+
+        steps:
+          - task: UseDotNet@2
+            displayName: 'Use .NET Core sdk'
+            inputs:
+              packageType: 'sdk'
+              version: '6.0.x'
+          - script: dotnet build
+            displayName: Build .NET App
+          - script: dotnet test
+            displayName: Test .NET App
+
+  - stage: container
+    condition: and(succeeded(), eq(variables.isMain, 'true'), eq('${{ parameters.container }}', 'true'))
+    displayName: Build and push container
+
+    jobs:
+      - template: pipelines/containers.yml
+        parameters:
+          workingDirectory: Tomek.Jaciubek.Service1
+          image: service1
+
+      - template: pipelines/containers.yml
+        parameters:
+          workingDirectory: Tomek.Jaciubek.Service2
+          image: service2
+
+      - template: pipelines/containers.yml
+        parameters:
+          workingDirectory: Tomek.Jaciubek.Service3
+          image: service3
