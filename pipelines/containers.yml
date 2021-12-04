@@ -21,7 +21,7 @@ jobs:
         inputs:
           command: buildAndPush
           buildContext: ${{ parameters.workingDirectory }}
-          repository: ${{ parameters.image }}
+          repository: kmaikaze/${{ parameters.image }}
           tags: |
             latest
             $(Build.BuildId)
