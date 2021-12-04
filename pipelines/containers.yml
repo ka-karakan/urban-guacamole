@@ -9,7 +9,7 @@ parameters:
 
 jobs:
   - job: ${{ parameters.image }}
-    displayName: Build and push Docker image for ${{ parameters.image }}
+    displayName: ${{ parameters.image }}
     steps:
       - task: Docker@2
         displayName: Login to Docker Hub
